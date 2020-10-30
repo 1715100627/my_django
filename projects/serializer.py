@@ -66,3 +66,9 @@ class ProjectModeSerializer(serializers.ModelSerializer):
         if not value.endswith("项目"):
             raise serializers.ValidationError('必须以项目结尾')
         return value
+
+
+class ProjectNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Projects
+        fields = ('id', 'name')
