@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from projects.models import Projects
+from interfaces.models import Interfaces
 
 
 # 创建自定义校验器
@@ -72,3 +73,17 @@ class ProjectNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Projects
         fields = ('id', 'name')
+
+
+class InterfacesNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Interfaces
+        fields = ('id', 'name', 'tester')
+
+
+class InterfacesByProjectIdSerializer(serializers.ModelSerializer):
+    interfaces_set = InterfacesNameSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Projects
+        fields = ('id', 'interfaces_set')

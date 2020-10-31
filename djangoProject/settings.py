@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,8 +39,9 @@ INSTALLED_APPS = [
 
     'django_filters',
     'rest_framework',
+    'user.apps.UserConfig',
     'projects.apps.ProjectsConfig',
-    'interfaces.apps.InterfacesConfig',
+    'interfaces.apps.InterfacesConfig'
 ]
 # 渲染api页面
 REST_FRAMEWORK = {
@@ -53,6 +55,27 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_PAGINATION_CLASS': 'utils.pagination.PageNumberPaginationManual',
     # 'PAGE_SIZE': 10
+
+    # 接口文档
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
+    # 认证权限类
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #         'rest_framework.permissions.IsAuthenticated'],
+
+    # 认证机制指定
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+            'rest_framework.authentication.SessionAuthentication',
+            'rest_framework.authentication.BasicAuthentication'
+    ],
+}
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_AUTH_HEADER_PREFIX': 'B',
+    # 指定自定义返回内容
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+    'utils.jwt_handler.jwt_response_payload_handler',
 }
 
 MIDDLEWARE = [
