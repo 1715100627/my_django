@@ -8,7 +8,7 @@ class Projects(BaseModel):
     leader = models.CharField(verbose_name='负责人', max_length=50, help_text='负责人')
     tester = models.CharField(verbose_name='测试人员', max_length=50, help_text='测试人员')
     programmer = models.CharField(verbose_name='开发人员', max_length=50, help_text='开发人员')
-    pubish_app = models.CharField(verbose_name='发布应用', max_length=100, help_text='发布应用')
+    publish_app = models.CharField(verbose_name='发布应用', max_length=100, help_text='发布应用')
     desc = models.CharField(verbose_name='描述信息', max_length=200, null=True, blank=True, default='', help_text='描述信息')
 
     class Meta:
