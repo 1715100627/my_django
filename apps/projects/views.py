@@ -2,18 +2,23 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import permissions
 from projects.models import Projects
-from projects.serializer import ProjectModeSerializer, \
-    ProjectNameSerializer, InterfacesByProjectIdSerializer
+from interfaces.models import Interfaces
+from projects.serializer import ProjectModeSerializer, ProjectNameSerializer, InterfacesByProjectIdSerializer
 from rest_framework.decorators import action
 
 
 class ProjectsViewSet(viewsets.ModelViewSet):
-    queryset = Projects.objects.all()
+    queryset = Projects.objects.filter(is_delete=False)
     serializer_class = ProjectModeSerializer
     # 指定过滤引擎
     # filter_fields = [DjangoFilterBackend]
     filter_fields = ['id', 'name', 'tester']
+    # 指定权限类
     permission_classes = [permissions.IsAuthenticated]
+
+    def perform_destroy(self, instance):
+        instance.is_delete = True
+        instance.save()  # 逻辑删除
 
     # 可以是用action装饰器声明自定义的动作
     # detail(url是否需要传递Pk，一条数据为True)
@@ -24,7 +29,12 @@ class ProjectsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True)
-    def interfaces(self, request, *args, **kwargs):
-        interface = self.get_object()
-        serializer = InterfacesByProjectIdSerializer(instance=interface)
-        return Response(serializer.data)
+    def interfaces(self, request, pk=None):
+        interface_objs = Interfaces.objects.filter(project_id=pk, is_delete=False)
+        one_list = []
+        for obj in interface_objs:
+            one_list.append({
+                'id': obj.id,
+                'name': obj.name
+            })
+        return Response(data=one_list)
