@@ -22,6 +22,8 @@ from rest_framework.documentation import include_docs_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('projects.urls')),
+    path('', include('envs.urls')),
+    path('', include('interfaces.urls')),
     path('docs/', include_docs_urls(title='接口文档',
                                     description='接口自动化测试平台')),
     path('api/', include('rest_framework.urls')),

@@ -6,6 +6,8 @@ from interfaces.models import Interfaces
 from projects.serializer import ProjectModeSerializer, ProjectNameSerializer, InterfacesByProjectIdSerializer
 from rest_framework.decorators import action
 
+from projects.utils import get_paginated_response
+
 
 class ProjectsViewSet(viewsets.ModelViewSet):
     queryset = Projects.objects.filter(is_delete=False)
@@ -38,3 +40,16 @@ class ProjectsViewSet(viewsets.ModelViewSet):
                 'name': obj.name
             })
         return Response(data=one_list)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            datas = serializer.data
+            datas = get_paginated_response(datas)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

@@ -15,7 +15,7 @@ class ProjectModeSerializer(serializers.ModelSerializer):
         extra_kwarge = {
             'create_time': {
                 "read_only": True
-            }
+            },
         }
 
     def create(self, validated_data):
